@@ -1,0 +1,103 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
+
+body, html {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.neon-body {
+  height: 100vh;
+  font-family: 'Orbitron', sans-serif;
+  color: #fff;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+/* Fondo animado de energía */
+.glow-background {
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(0,255,255,0.05) 0%, transparent 70%);
+  background-repeat: repeat;
+  animation: pulseBackground 8s infinite linear;
+  z-index: 0;
+}
+
+@keyframes pulseBackground {
+  0% { transform: translate(-25%, -25%) rotate(0deg); }
+  100% { transform: translate(-25%, -25%) rotate(360deg); }
+}
+
+/* Contenedor del menú */
+.neon-container {
+  position: relative;
+  z-index: 2;
+  background-color: rgba(10, 10, 30, 0.6);
+  border: 2px solid #0ff;
+  box-shadow: 0 0 30px #0ff, 0 0 60px #f0f;
+  padding: 40px 50px;
+  border-radius: 20px;
+  text-align: center;
+  animation: aparecer 2s ease-out;
+}
+
+@keyframes aparecer {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.neon-title {
+  font-size: 3em;
+  color: #0ff;
+  text-shadow: 0 0 15px #0ff, 0 0 30px #00f;
+  margin-bottom: 15px;
+}
+
+.zone {
+  color: #f0f;
+  text-shadow: 0 0 15px #f0f, 0 0 30px #f0f;
+}
+
+.neon-sub {
+  font-size: 1.2em;
+  margin-bottom: 30px;
+  color: #fff;
+  text-shadow: 0 0 10px #aaa;
+}
+
+.neon-button {
+  display: inline-block;
+  margin: 10px;
+  padding: 15px 30px;
+  font-size: 1em;
+  color: #fff;
+  background-color: transparent;
+  border: 2px solid #0ff;
+  border-radius: 10px;
+  cursor: pointer;
+  text-shadow: 0 0 5px #0ff;
+  box-shadow: 0 0 10px #0ff;
+  transition: all 0.3s ease;
+}
+
+.neon-button:hover {
+  background-color: #0ff;
+  color: #000;
+  box-shadow: 0 0 20px #f0f, 0 0 40px #0ff;
+}
+
+.neon-instrucciones {
+  margin-top: 20px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid #0ff;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: left;
+  font-size: 0.95em;
+  box-shadow: 0 0 10px #0ff88f;
+}
