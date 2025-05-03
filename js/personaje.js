@@ -115,3 +115,6 @@ function activarTeclasParaCorrer() {
 export function actualizarAnimacion(delta) {
     if (mixer) mixer.update(delta);
 }
+export function obtenerPersonaje() {
+    return personaje;
+}
