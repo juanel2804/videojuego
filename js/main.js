@@ -4,26 +4,7 @@ const btnIniciar = document.getElementById("btn-iniciar");
 
 btnInstrucciones.addEventListener("click", () => {
     divInstrucciones.style.display = divInstrucciones.style.display === "none" ? "block" : "none";
-    document.getElementById("controles-moviles").style.display = "flex";
-
-    document.getElementById("btn-izq").addEventListener("touchstart", () => {
-        moverIzquierda = true;
-    });
-    document.getElementById("btn-der").addEventListener("touchstart", () => {
-        moverDerecha = true;
-    });
-    document.getElementById("btn-salto").addEventListener("touchstart", () => {
-        saltar = true;
-    });
-
-    // Reset al soltar
-    ["btn-izq", "btn-der", "btn-salto"].forEach(id => {
-        document.getElementById(id).addEventListener("touchend", () => {
-            moverIzquierda = false;
-            moverDerecha = false;
-            saltar = false;
-        });
-    });
+   
 
 });
 
@@ -76,20 +57,20 @@ function crearSeccionPasillo(posZ) {
     grupo.position.z = posZ;
 
 
-    // // Barras de luz horizontales en el techo
-    // for (let i = -40; i <= 40; i += 8) {
-    //     const luzTecho = new THREE.Mesh(
-    //         new THREE.BoxGeometry(3, 0.07, 0.1),
-    //         new THREE.MeshStandardMaterial({
-    //             emissive: 0x00ccff,
-    //             color: 0x000000,
-    //             emissiveIntensity: 3,
-    //             metalness: 1
-    //         })
-    //     );
-    //     luzTecho.position.set(0, 4, i);
-    //     grupo.add(luzTecho);
-    // }
+    // Barras de luz horizontales en el techo
+    for (let i = -40; i <= 40; i += 8) {
+        const luzTecho = new THREE.Mesh(
+            new THREE.BoxGeometry(3, 0.07, 0.1),
+            new THREE.MeshStandardMaterial({
+                emissive: 0x00ccff,
+                color: 0x000000,
+                emissiveIntensity: 3,
+                metalness: 1
+            })
+        );
+        luzTecho.position.set(0, 4, i);
+        grupo.add(luzTecho);
+    }
 
 
     // Piso largo tipo pasillo
@@ -196,73 +177,73 @@ function crearSeccionPasillo(posZ) {
         }
     }
 
-    // // === PORTALES SCI-FI ===
-    // for (let z = -40; z <= 40; z += 15) {
-    //     const portal = new THREE.Group();
+    // === PORTALES SCI-FI ===
+    for (let z = -40; z <= 40; z += 15) {
+        const portal = new THREE.Group();
 
-    //     const ancho = 5.8;
-    //     const alto = 3.5;
-    //     const grosor = 0.1;
+        const ancho = 5.8;
+        const alto = 3.5;
+        const grosor = 0.1;
 
-    //     const materialPortal = new THREE.MeshStandardMaterial({
-    //         color: 0x000000,
-    //         emissive: 0x00ffff,
-    //         emissiveIntensity: 2,
-    //         metalness: 1,
-    //         roughness: 0.2
-    //     });
+        const materialPortal = new THREE.MeshStandardMaterial({
+            color: 0x000000,
+            emissive: 0x00ffff,
+            emissiveIntensity: 2,
+            metalness: 1,
+            roughness: 0.2
+        });
 
-    //     // Parte superior
-    //     const barraSuperior = new THREE.Mesh(
-    //         new THREE.BoxGeometry(ancho, grosor, grosor),
-    //         materialPortal
-    //     );
-    //     barraSuperior.position.y = alto;
-    //     portal.add(barraSuperior);
+        // Parte superior
+        const barraSuperior = new THREE.Mesh(
+            new THREE.BoxGeometry(ancho, grosor, grosor),
+            materialPortal
+        );
+        barraSuperior.position.y = alto;
+        portal.add(barraSuperior);
 
-    //     // Laterales
-    //     const lateralIzq = new THREE.Mesh(
-    //         new THREE.BoxGeometry(grosor, alto, grosor),
-    //         materialPortal
-    //     );
-    //     lateralIzq.position.set(-ancho / 2, alto / 2, 0);
-    //     portal.add(lateralIzq);
+        // Laterales
+        const lateralIzq = new THREE.Mesh(
+            new THREE.BoxGeometry(grosor, alto, grosor),
+            materialPortal
+        );
+        lateralIzq.position.set(-ancho / 2, alto / 2, 0);
+        portal.add(lateralIzq);
 
-    //     const lateralDer = lateralIzq.clone();
-    //     lateralDer.position.x = ancho / 2;
-    //     portal.add(lateralDer);
+        const lateralDer = lateralIzq.clone();
+        lateralDer.position.x = ancho / 2;
+        portal.add(lateralDer);
 
-    //     portal.position.set(0, 0.5, z); // sube el grupo completo
-
-
-    //     grupo.add(portal);
-    //     portales.push([barraSuperior, lateralIzq, lateralDer]); // Guardamos para animación
-    // }
+        portal.position.set(0, 0.5, z); // sube el grupo completo
 
 
-
-    // for (let z = -40; z <= 40; z += 10) {
-    //     const rejillaIzq = new THREE.Mesh(
-    //         new THREE.BoxGeometry(0.03, 4, 0.05),
-    //         new THREE.MeshStandardMaterial({
-    //             color: 0x110011,
-    //             metalness: 0.7,
-    //             roughness: 0.3
-    //         })
-    //     );
-    //     rejillaIzq.position.set(-2.4, 2, z); // ✅ MÁS CERCA DE LA PARED
-    //     grupo.add(rejillaIzq);
-
-    //     const rejillaDer = rejillaIzq.clone();
-    //     rejillaDer.position.x = 2.4; // ✅ MÁS CERCA DE LA PARED
-    //     grupo.add(rejillaDer);
-    // }
+        grupo.add(portal);
+        portales.push([barraSuperior, lateralIzq, lateralDer]); // Guardamos para animación
+    }
 
 
 
+    for (let z = -40; z <= 40; z += 10) {
+        const rejillaIzq = new THREE.Mesh(
+            new THREE.BoxGeometry(0.03, 4, 0.05),
+            new THREE.MeshStandardMaterial({
+                color: 0x110011,
+                metalness: 0.7,
+                roughness: 0.3
+            })
+        );
+        rejillaIzq.position.set(-2.4, 2, z); // ✅ MÁS CERCA DE LA PARED
+        grupo.add(rejillaIzq);
 
-    // agregarDiagonales(paredIzq, 1);
-    // agregarDiagonales(paredDer, -1);
+        const rejillaDer = rejillaIzq.clone();
+        rejillaDer.position.x = 2.4; // ✅ MÁS CERCA DE LA PARED
+        grupo.add(rejillaDer);
+    }
+
+
+
+
+    agregarDiagonales(paredIzq, 1);
+    agregarDiagonales(paredDer, -1);
 
 
     piso.receiveShadow = true;
@@ -274,66 +255,64 @@ function crearSeccionPasillo(posZ) {
         requestAnimationFrame(animar);
         renderizador.render(escena, camara);
     }
-    // const luzFlash = new THREE.PointLight(0xff00ff, 1, 10);
-    // luzFlash.position.set(0, 2, 2);
-    // grupo.add(luzFlash);
+    const luzFlash = new THREE.PointLight(0xff00ff, 1, 10);
+    luzFlash.position.set(0, 2, 2);
+    grupo.add(luzFlash);
 
-    // setInterval(() => {
-    //     luzFlash.intensity = Math.random() * 1.5;
-    // }, 100);
+    setInterval(() => {
+        luzFlash.intensity = Math.random() * 1.5;
+    }, 100);
 
-    // const luzAmbiente = new THREE.AmbientLight(0x220033, 0.3);
-    // grupo.add(luzAmbiente);
+    const luzAmbiente = new THREE.AmbientLight(0x220033, 0.3);
+    grupo.add(luzAmbiente);
 
-    // for (let z = -40; z <= 40; z += 10) {
-    //     const tubo = new THREE.Mesh(
-    //         new THREE.CylinderGeometry(0.05, 0.05, 3, 16),
-    //         new THREE.MeshStandardMaterial({
-    //             color: 0x000000,
-    //             emissive: 0x00ffff,
-    //             emissiveIntensity: 3
-    //         })
-    //     );
-    //     tubo.rotation.z = Math.PI / 2;
-    //     tubo.position.set(-2.9, 2, z);
-    //     grupo.add(tubo);
+    for (let z = -40; z <= 40; z += 10) {
+        const tubo = new THREE.Mesh(
+            new THREE.CylinderGeometry(0.05, 0.05, 3, 16),
+            new THREE.MeshStandardMaterial({
+                color: 0x000000,
+                emissive: 0x00ffff,
+                emissiveIntensity: 3
+            })
+        );
+        tubo.rotation.z = Math.PI / 2;
+        tubo.position.set(-2.9, 2, z);
+        grupo.add(tubo);
 
-    //     const tubo2 = tubo.clone();
-    //     tubo2.position.x = 2.9;
-    //     grupo.add(tubo2);
-    // }
-    // luzPared = new THREE.RectAreaLight(0xff00ff, 2, 4, 4);
-    // luzPared.position.set(-1.9, 2, 0);
-    // luzPared.lookAt(0, 2, 0);
-    // grupo.add(luzPared);
+        const tubo2 = tubo.clone();
+        tubo2.position.x = 2.9;
+        grupo.add(tubo2);
+    }
+    luzPared = new THREE.RectAreaLight(0xff00ff, 2, 4, 4);
+    luzPared.position.set(-1.9, 2, 0);
+    luzPared.lookAt(0, 2, 0);
+    grupo.add(luzPared);
 
-    // luzParedDer = luzPared.clone();
-    // luzParedDer.position.x = 1.9;
-    // luzParedDer.lookAt(0, 2, 0);
-    // grupo.add(luzParedDer);
+    luzParedDer = luzPared.clone();
+    luzParedDer.position.x = 1.9;
+    luzParedDer.lookAt(0, 2, 0);
+    grupo.add(luzParedDer);
 
 
-    //         for (let z = -40; z <= 40; z += 10) {
-    //             const esfera = new THREE.Mesh(
-    //                 new THREE.SphereGeometry(0.15, 16, 16),
-    //                 new THREE.MeshStandardMaterial({
-    //                     emissive: 0xff00ff,
-    //                     emissiveIntensity: 3,
-    //                     color: 0x000000
-    //                 })
-    //             );
+            for (let z = -40; z <= 40; z += 10) {
+                const esfera = new THREE.Mesh(
+                    new THREE.SphereGeometry(0.15, 16, 16),
+                    new THREE.MeshStandardMaterial({
+                        emissive: 0xff00ff,
+                        emissiveIntensity: 3,
+                        color: 0x000000
+                    })
+                );
 
-    //             esfera.position.set(2.5, 2.5, z);
-    //             grupo.add(esfera);
-    //             lucesAnimadas.push(esfera);
+                esfera.position.set(2.5, 2.5, z);
+                grupo.add(esfera);
+                lucesAnimadas.push(esfera);
 
-    //             const esfera2 = esfera.clone();
-    //             esfera2.position.x = -2.5;
-    //             grupo.add(esfera2);
-    //             lucesAnimadas.push(esfera2);
-
-    // // 
-    //         }
+                const esfera2 = esfera.clone();
+                esfera2.position.x = -2.5;
+                grupo.add(esfera2);
+                lucesAnimadas.push(esfera2);
+            }
 
 
 
@@ -392,16 +371,16 @@ function iniciarPasillo() {
 
 
 
-    // // Luz direccional para iluminar al personaje
-    // const luzDireccional = new THREE.DirectionalLight(0xffffff, 2);
-    // luzDireccional.position.set(0, 4, 5);
-    // luzDireccional.castShadow = true;
-    // mundo.add(luzDireccional);
+    // Luz direccional para iluminar al personaje
+    const luzDireccional = new THREE.DirectionalLight(0xffffff, 2);
+    luzDireccional.position.set(0, 4, 5);
+    luzDireccional.castShadow = true;
+    mundo.add(luzDireccional);
 
-    // // Luz puntual cerca del personaje para reforzar color
-    // const luzPersonaje = new THREE.PointLight(0xff00ff, 2, 10);
-    // luzPersonaje.position.set(0, 2, 5);
-    // mundo.add(luzPersonaje);
+    // Luz puntual cerca del personaje para reforzar color
+    const luzPersonaje = new THREE.PointLight(0xff00ff, 2, 10);
+    luzPersonaje.position.set(0, 2, 5);
+    mundo.add(luzPersonaje);
 
 
     // Renderizador
@@ -413,21 +392,21 @@ function iniciarPasillo() {
 
     renderizador.setSize(window.innerWidth, window.innerHeight);
     renderizador.setClearColor(0x000000);
-    //renderizador.shadowMap.enabled = true;
-    //renderizador.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderizador.shadowMap.enabled = true;
+    renderizador.shadowMap.type = THREE.PCFSoftShadowMap;
 
 
     // Luces tipo neón
-    // const luzSuperior = new THREE.PointLight(0x00ffff, 1.5, 20);
-    // luzSuperior.position.set(0, 5, 0);
-    // mundo.add(luzSuperior);
+    const luzSuperior = new THREE.PointLight(0x00ffff, 1.5, 20);
+    luzSuperior.position.set(0, 5, 0);
+    mundo.add(luzSuperior);
 
-    // const luzFrontal = new THREE.PointLight(0xff00ff, 1, 20);
-    // luzFrontal.position.set(0, 2, 5);
-    // mundo.add(luzFrontal);
+    const luzFrontal = new THREE.PointLight(0xff00ff, 1, 20);
+    luzFrontal.position.set(0, 2, 5);
+    mundo.add(luzFrontal);
 
-    // luzSuperior.castShadow = true;
-    // luzFrontal.castShadow = true;
+    luzSuperior.castShadow = true;
+    luzFrontal.castShadow = true;
     let contadorEsquivados = 0;
 
 
