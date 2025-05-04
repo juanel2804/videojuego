@@ -4,7 +4,8 @@ body,
 html {
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow-x: hidden;  /* solo oculta scroll horizontal */
+  overflow-y: auto;    /* ✅ permite scroll vertical */
 }
 
 .neon-body {
