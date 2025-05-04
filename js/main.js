@@ -4,8 +4,32 @@ const btnIniciar = document.getElementById("btn-iniciar");
 
 btnInstrucciones.addEventListener("click", () => {
     divInstrucciones.style.display = divInstrucciones.style.display === "none" ? "block" : "none";
+    document.getElementById("controles-moviles").style.display = "flex";
+
+    document.getElementById("btn-izq").addEventListener("touchstart", () => {
+        moverIzquierda = true;
+    });
+    document.getElementById("btn-der").addEventListener("touchstart", () => {
+        moverDerecha = true;
+    });
+    document.getElementById("btn-salto").addEventListener("touchstart", () => {
+        saltar = true;
+    });
+
+    // Reset al soltar
+    ["btn-izq", "btn-der", "btn-salto"].forEach(id => {
+        document.getElementById(id).addEventListener("touchend", () => {
+            moverIzquierda = false;
+            moverDerecha = false;
+            saltar = false;
+        });
+    });
+
 });
 
+let moverIzquierda = false;
+let moverDerecha = false;
+let saltar = false;
 
 import * as THREE from 'https://unpkg.com/three@0.158.0/build/three.module.js';
 const reloj = new THREE.Clock(); // Para animación del personaje
@@ -405,8 +429,8 @@ function iniciarPasillo() {
     // luzSuperior.castShadow = true;
     // luzFrontal.castShadow = true;
     let contadorEsquivados = 0;
-    
-    
+
+
 
 
     const divContador = document.getElementById("contador");
@@ -415,41 +439,50 @@ function iniciarPasillo() {
 
     function obstaculoEsquivadoCallback() {
         obstaculosEsquivados++;
-    
+
         const divContador = document.getElementById("contador");
         if (divContador) {
             divContador.textContent = `Esquivados: ${obstaculosEsquivados}`;
         }
-    
+
         if (obstaculosEsquivados % 15 === 0) {
             nivelActual++;
             generarObstaculos(escena, mundo, nivelActual);
             mostrarVentanaNivel(nivelActual);
             console.log(`🚀 Nivel aumentado: ${nivelActual}`);
         }
-    
+
         const divNivel = document.getElementById("nivel");
         if (divNivel) {
             divNivel.textContent = `Nivel: ${nivelActual}`;
         }
     }
-    
-    
-    
+
+
+
     function mostrarVentanaNivel(nivel) {
         const ventana = document.getElementById("ventana-nivel");
         ventana.innerHTML = `🎉 ¡Subiste de Nivel!<br>Nivel ${nivel}`;
         ventana.style.display = "block";
         moviendoMundo = false;
-    
+
         setTimeout(() => {
             ventana.style.display = "none";
             moviendoMundo = true;
         }, 3000);
     }
-    
-   
-    
+
+    function mostrarPantallaPerdiste() {
+        const ventanaPerdiste = document.getElementById("ventana-perdiste");
+        ventanaPerdiste.style.display = "block";
+
+        const btn = document.getElementById("btn-reintentar");
+        btn.onclick = () => {
+            location.reload(); // o puedes mandar a una pantalla de menú
+        };
+    }
+
+
 
     function animar() {
 
@@ -466,6 +499,36 @@ function iniciarPasillo() {
 
 
         const personaje = obtenerPersonaje();
+
+        if (personaje) {
+            const pos = personaje.position;
+        
+            if (moverIzquierda) {
+                pos.x -= 0.08; // velocidad lateral izquierda
+            }
+        
+            if (moverDerecha) {
+                pos.x += 0.08; // velocidad lateral derecha
+            }
+        
+            if (saltar && pos.y <= 1.01) {
+                if (typeof personaje.velocityY === 'undefined') personaje.velocityY = 0;
+                personaje.velocityY = 0.12; // impulso de salto
+            }
+        
+            // Simulación de gravedad
+            if (typeof personaje.velocityY !== 'undefined') {
+                personaje.velocityY -= 0.006; // gravedad
+                pos.y += personaje.velocityY;
+        
+                if (pos.y < 1) {
+                    pos.y = 1;
+                    personaje.velocityY = 0;
+                }
+            }
+        }
+        
+
         if (personaje) {
             if (verificarColisiones(personaje)) {
                 if (!estaChocando) contadorChoques++; // 👈 Solo cuenta nuevos choques
@@ -479,8 +542,8 @@ function iniciarPasillo() {
             } else {
                 estaChocando = false;
                 tiempoDetenido = 0;
-                
-                
+
+
             }
 
         }
@@ -580,10 +643,11 @@ function iniciarPasillo() {
             const zNiebla = nieblaAsesina.position.z;
 
             if (zNiebla < zJugador + 0.5) {
-                alert("🌫️ ¡La niebla te atrapó!");
-                location.reload();
+                mostrarPantallaPerdiste();
+                moviendoMundo = false;
                 return;
             }
+
         }
 
 
@@ -619,6 +683,20 @@ window.addEventListener("DOMContentLoaded", () => {
     const btnIniciar = document.getElementById("btn-iniciar");
     const pantallaBienvenida = document.getElementById("pantalla-bienvenida");
     const canvasJuego = document.getElementById("juego");
+
+    const controles = ["btn-izq", "btn-der", "btn-salto"];
+    controles.forEach(id => {
+        document.getElementById(id).addEventListener("touchstart", () => {
+            if (id === "btn-izq") moverIzquierda = true;
+            if (id === "btn-der") moverDerecha = true;
+            if (id === "btn-salto") saltar = true;
+        });
+        document.getElementById(id).addEventListener("touchend", () => {
+            moverIzquierda = false;
+            moverDerecha = false;
+            saltar = false;
+        });
+    });
 
     btnIniciar.addEventListener("click", () => {
         pantallaBienvenida.style.display = "none";

@@ -45,6 +45,14 @@
 
 
   <canvas id="juego" style="display: none;"></canvas>
+  
+  <div id="controles-moviles" style="display: none;">
+    <button class="btn-movil" id="btn-izq">◀</button>
+    <button class="btn-movil" id="btn-der">▶</button>
+    <button class="btn-movil" id="btn-salto">⤒</button>
+  </div>
+  
+
   <div id="hud">
     <div id="contador">Esquivados: 0</div>
     <div id="nivel">Nivel: 1</div>
@@ -66,6 +74,37 @@
     z-index: 1000;
 ">
   </div>
+
+  <div id="ventana-perdiste" style="
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.9);
+    color: #ff0077;
+    padding: 30px;
+    border-radius: 20px;
+    font-size: 2em;
+    text-align: center;
+    z-index: 1001;
+    box-shadow: 0 0 25px #ff0077;
+">
+    🌫 ¡La niebla te atrapó!<br><br>
+    <button id="btn-reintentar" style="
+        padding: 15px 30px;
+        font-size: 1em;
+        margin-top: 20px;
+        border: none;
+        border-radius: 10px;
+        background: #ff0077;
+        color: white;
+        cursor: pointer;
+        box-shadow: 0 0 15px #ff0077;
+        transition: transform 0.2s;
+    ">🔁 Volver al Inicio</button>
+</div>
+
 
   <script type="module" src="js/main.js"></script>
 </body>

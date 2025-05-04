@@ -120,3 +120,44 @@ body, html {
   color: #ff4444;
   font-weight: bold;
 }
+#ventana-perdiste {
+  animation: aparecer 0.5s ease-out;
+}
+
+@keyframes aparecer {
+  0% { transform: translate(-50%, -50%) scale(0.5); opacity: 0; }
+  100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+}
+
+#btn-reintentar:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 25px #ff0077;
+}
+canvas#juego {
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  touch-action: none; /* Previene zoom y scroll en canvas */
+}
+#controles-moviles {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1002;
+  display: flex;
+  gap: 10px;
+}
+
+.btn-movil {
+  padding: 15px 20px;
+  background: rgba(0, 255, 255, 0.3);
+  border: 2px solid #0ff;
+  color: white;
+  font-size: 1.5em;
+  border-radius: 10px;
+  backdrop-filter: blur(4px);
+}
+body, html, canvas, .btn-movil {
+  touch-action: none;
+}
