@@ -33,9 +33,12 @@ body, html {
   100% { transform: translate(-25%, -25%) rotate(360deg); }
 }
 
-/* Contenedor del menú */
 .neon-container {
-  position: relative;
+  position: absolute; /* o fixed si quieres que quede fija incluso al hacer scroll */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
   z-index: 2;
   background-color: rgba(10, 10, 30, 0.6);
   border: 2px solid #0ff;
@@ -161,3 +164,4 @@ canvas#juego {
 body, html, canvas, .btn-movil {
   touch-action: none;
 }
+
