@@ -18,6 +18,8 @@
 </head>
 
 <body class="neon-body">
+
+    
     <div class="glow-background"></div>
 
     <div id="pantalla-bienvenida" class="neon-container">
@@ -39,7 +41,11 @@
         </div>
     </div>
     <canvas id="juego" style="display: none;"></canvas>
-
+    <div id="hud">
+        <div id="contador">Esquivados: 0</div>
+        <div id="mensaje" style="display: none;">💥 ¡Has perdido!</div>
+      </div>
+      
 
     <script type="module" src="js/main.js"></script>
 </body>

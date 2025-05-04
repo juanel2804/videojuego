@@ -4,6 +4,16 @@ let obstaculos = [];
 let velocidadObstaculo = 0.1;
 let tiempoUltimo = 0;
 let intervaloGeneracion = 2;
+let contadorEsquivados = 0;
+let divContador;
+
+export function inicializarHUD() {
+    divContador = document.getElementById("contador");
+    if (divContador) {
+        divContador.textContent = `Esquivados: 0`;
+    }
+}
+
 
 const geometria = new THREE.BoxGeometry(0.5, 0.5, 0.5);
 const material = new THREE.MeshStandardMaterial({
@@ -51,7 +61,12 @@ export function actualizarObstaculos(delta, mundo, camara, moviendoMundo) {
             obs.geometry.dispose();
             obs.material.dispose();
             obstaculos.splice(i, 1);
+        
+            contadorEsquivados++;
+            divContador.textContent = `Esquivados: ${contadorEsquivados}`;
         }
+        
+        
     }
 
 }

@@ -33,8 +33,16 @@ const largoSeccion = 100; // el largo de cada sección
 const cantidadSecciones = 3; // puedes usar 2 o 3 secciones reciclables
 let luzPared, luzParedDer;
 let t = 0;
+let estaChocando = false; // variable global o dentro de iniciarPasillo
+let tiempoDetenido = 0;
 let mundo; // <== Agrega esto junto con las demás variables globales
+let nieblaAsesina;
+let velocidadNiebla = 0.004;
+let velocidadJugador = 0.05;     // velocidad inicial
+const velocidadMaxima = 1;    // velocidad máxima
+const aceleracion = 0.012;       // aceleración gradual
 
+let contadorChoques = 0;
 
 
 function crearSeccionPasillo(posZ) {
@@ -307,20 +315,38 @@ function crearSeccionPasillo(posZ) {
     return grupo;
 
 }
+import { inicializarHUD } from './obstaculos.js';
 
 
 function iniciarPasillo() {
 
+  
 
     // Crear escena
     escena = new THREE.Scene();
     escena.background = new THREE.Color(0x070016); // más oscuro tipo antro
     escena.fog = new THREE.Fog(0x000000, 10, 100); // niebla negra
 
+
     mundo = new THREE.Group(); // ✅ En lugar de usar `const mundo`
 
 
     escena.add(mundo);
+
+    const geometriaNiebla = new THREE.PlaneGeometry(6, 4);
+const materialNiebla = new THREE.MeshStandardMaterial({
+    color: 0x550055,
+    transparent: true,
+    opacity: 0.4,
+    side: THREE.DoubleSide,
+    emissive: 0x770077,
+    emissiveIntensity: 0.8
+});
+nieblaAsesina = new THREE.Mesh(geometriaNiebla, materialNiebla);
+nieblaAsesina.rotation.x = -Math.PI / 2;
+nieblaAsesina.position.set(0, 1.5, 3); // empieza detrás del jugador
+escena.add(nieblaAsesina);
+
 
     for (let i = 0; i < cantidadSecciones; i++) {
         const seccion = crearSeccionPasillo(i * -largoSeccion); // secciones atrás
@@ -336,6 +362,7 @@ function iniciarPasillo() {
 
 
     cargarPersonaje(escena);
+    inicializarHUD(); // ✅ Esto conecta el HUD al div #contador
     generarObstaculos(escena);
 
 
@@ -375,10 +402,16 @@ function iniciarPasillo() {
 
     // luzSuperior.castShadow = true;
     // luzFrontal.castShadow = true;
+    let contadorEsquivados = 0;
+    const divContador = document.getElementById("contador");
+    const divMensaje = document.getElementById("mensaje");
 
 
 
     function animar() {
+
+
+
         requestAnimationFrame(animar);
         t += 0.05;
 
@@ -388,11 +421,23 @@ function iniciarPasillo() {
 
 
         const personaje = obtenerPersonaje();
-        if (personaje && verificarColisiones(personaje)) {
-            alert("💥 ¡Colisión! Has perdido.");
-            location.reload();
-            return;
+        if (personaje) {
+            if (verificarColisiones(personaje)) {
+                if (!estaChocando) contadorChoques++; // 👈 Solo cuenta nuevos choques
+                estaChocando = true;
+                tiempoDetenido += delta;
+            
+                if (tiempoDetenido > 0.5) {
+                    estaChocando = false;
+                    tiempoDetenido = 0;
+                }
+            } else {
+                estaChocando = false;
+                tiempoDetenido = 0;
+            }
+            
         }
+        
 
 
         // Animación de pulsación para portales
@@ -426,11 +471,14 @@ function iniciarPasillo() {
             esfera.material.emissive = color;
         });
 
-
-        if (moviendoMundo) {
-            mundo.position.z += 0.1; // Puedes ajustar la velocidad
+        if (moviendoMundo && !estaChocando) {
+            velocidadJugador = Math.min(velocidadJugador + aceleracion, velocidadMaxima);
+            mundo.position.z += velocidadJugador;
+        } else {
+            velocidadJugador = 0.05; // Reinicia si no se mueve o si está chocando
         }
-
+        
+        
         // // Reciclado de secciones para pasillo infinito
         // for (let i = 0; i < cantidadSecciones; i++) {
         //     const seccion = crearSeccionPasillo(i * -largoSeccion + 2.5); // 🟢 compensar el z inicial
@@ -449,15 +497,49 @@ function iniciarPasillo() {
         for (let i = 0; i < seccionesPasillo.length; i++) {
             const seccion = seccionesPasillo[i];
             const zSeccion = seccion.getWorldPosition(new THREE.Vector3()).z;
-        
+
             // Si la sección ya está detrás de la cámara
             if (zSeccion > zPersonaje + largoSeccion) {
                 // Buscar la sección más alejada en Z
                 const masLejana = Math.min(...seccionesPasillo.map(s => s.position.z));
                 seccion.position.z = masLejana - largoSeccion;
-        
+
                 // Opcional: volver a ordenar el arreglo
                 seccionesPasillo.sort((a, b) => a.position.z - b.position.z);
+            }
+        }
+
+       // La niebla avanza siempre que se esté moviendo el mundo
+       if (personaje) {
+        const zJugador = personaje.getWorldPosition(new THREE.Vector3()).z;
+        const zNiebla = nieblaAsesina.position.z;
+        const distancia = zJugador - zNiebla;
+    
+        // Si te estás moviendo y no estás chocando, la niebla avanza pero más lento
+        if (estaChocando) {
+            // velocidad base + incremento por cada choque
+            const velocidadNiebla = 0.02 + contadorChoques * 0.005; // Ajusta el 0.002 si quieres que acelere más o menos
+            nieblaAsesina.position.z -= velocidadNiebla;
+        }else if (moviendoMundo && distancia > 3) {
+            nieblaAsesina.position.z -= 0.001; // avanza lentamente si estás corriendo bien
+        }
+        
+        
+    
+
+    }
+    
+    
+        
+        // Verifica si alcanzó al jugador
+        if (personaje) {
+            const zJugador = personaje.getWorldPosition(new THREE.Vector3()).z;
+            const zNiebla = nieblaAsesina.position.z;
+        
+            if (zNiebla < zJugador + 0.5) {
+                alert("🌫️ ¡La niebla te atrapó!");
+                location.reload();
+                return;
             }
         }
         
@@ -468,6 +550,23 @@ function iniciarPasillo() {
     const lineaDebug = new THREE.GridHelper(6, 1, 0xff00ff, 0xff00ff);
     lineaDebug.position.z = 20;
     escena.add(lineaDebug);
+
+    const personaje = obtenerPersonaje();
+
+if (personaje) {
+    if (verificarColisiones(personaje)) {
+        estaChocando = true;
+        tiempoDetenido += delta;
+
+        if (tiempoDetenido > 0.5) { // medio segundo de castigo
+            estaChocando = false;
+            tiempoDetenido = 0;
+        }
+    } else {
+        estaChocando = false;
+        tiempoDetenido = 0;
+    }
+}
 
 
     animar();
