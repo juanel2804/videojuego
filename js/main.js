@@ -4,7 +4,7 @@ const btnIniciar = document.getElementById("btn-iniciar");
 
 btnInstrucciones.addEventListener("click", () => {
     divInstrucciones.style.display = divInstrucciones.style.display === "none" ? "block" : "none";
-   
+
 
 });
 
@@ -46,6 +46,7 @@ let velocidadNiebla = 0.004;
 let velocidadJugador = 0.05;     // velocidad inicial
 const velocidadMaxima = 1;    // velocidad máxima
 const aceleracion = 0.012;       // aceleración gradual
+let carrilActual = 0; // -1: izquierda, 0: centro, 1: derecha
 
 let contadorChoques = 0;
 let nivelActual = 1;
@@ -222,28 +223,28 @@ function crearSeccionPasillo(posZ) {
 
 
 
-    for (let z = -40; z <= 40; z += 10) {
-        const rejillaIzq = new THREE.Mesh(
-            new THREE.BoxGeometry(0.03, 4, 0.05),
-            new THREE.MeshStandardMaterial({
-                color: 0x110011,
-                metalness: 0.7,
-                roughness: 0.3
-            })
-        );
-        rejillaIzq.position.set(-2.4, 2, z); // ✅ MÁS CERCA DE LA PARED
-        grupo.add(rejillaIzq);
+    // for (let z = -40; z <= 40; z += 10) {
+    //     const rejillaIzq = new THREE.Mesh(
+    //         new THREE.BoxGeometry(0.03, 4, 0.05),
+    //         new THREE.MeshStandardMaterial({
+    //             color: 0x110011,
+    //             metalness: 0.7,
+    //             roughness: 0.3
+    //         })
+    //     );
+    //     rejillaIzq.position.set(-2.4, 2, z); // ✅ MÁS CERCA DE LA PARED
+    //     grupo.add(rejillaIzq);
 
-        const rejillaDer = rejillaIzq.clone();
-        rejillaDer.position.x = 2.4; // ✅ MÁS CERCA DE LA PARED
-        grupo.add(rejillaDer);
-    }
-
-
+    //     const rejillaDer = rejillaIzq.clone();
+    //     rejillaDer.position.x = 2.4; // ✅ MÁS CERCA DE LA PARED
+    //     grupo.add(rejillaDer);
+    // }
 
 
-    agregarDiagonales(paredIzq, 1);
-    agregarDiagonales(paredDer, -1);
+
+
+    // agregarDiagonales(paredIzq, 1);
+    // agregarDiagonales(paredDer, -1);
 
 
     piso.receiveShadow = true;
@@ -283,36 +284,38 @@ function crearSeccionPasillo(posZ) {
         tubo2.position.x = 2.9;
         grupo.add(tubo2);
     }
-    luzPared = new THREE.RectAreaLight(0xff00ff, 2, 4, 4);
-    luzPared.position.set(-1.9, 2, 0);
-    luzPared.lookAt(0, 2, 0);
-    grupo.add(luzPared);
+    // luzPared = new THREE.RectAreaLight(0xff00ff, 2, 4, 4);
+    // luzPared.position.set(-1.9, 2, 0);
+    // luzPared.lookAt(0, 2, 0);
+    // grupo.add(luzPared);
 
-    luzParedDer = luzPared.clone();
-    luzParedDer.position.x = 1.9;
-    luzParedDer.lookAt(0, 2, 0);
-    grupo.add(luzParedDer);
+    // luzParedDer = luzPared.clone();
+    // luzParedDer.position.x = 1.9;
+    // luzParedDer.lookAt(0, 2, 0);
+    // grupo.add(luzParedDer);
 
 
-            for (let z = -40; z <= 40; z += 10) {
-                const esfera = new THREE.Mesh(
-                    new THREE.SphereGeometry(0.15, 16, 16),
-                    new THREE.MeshStandardMaterial({
-                        emissive: 0xff00ff,
-                        emissiveIntensity: 3,
-                        color: 0x000000
-                    })
-                );
+    //         for (let z = -40; z <= 40; z += 10) {
+    //             const esfera = new THREE.Mesh(
+    //                 new THREE.SphereGeometry(0.15, 16, 16),
+    //                 new THREE.MeshStandardMaterial({
+    //                     emissive: 0xff00ff,
+    //                     emissiveIntensity: 3,
+    //                     color: 0x000000
+    //                 })
+    //             );
 
-                esfera.position.set(2.5, 2.5, z);
-                grupo.add(esfera);
-                lucesAnimadas.push(esfera);
+    //             esfera.position.set(2.5, 2.5, z);
+    //             grupo.add(esfera);
+    //             lucesAnimadas.push(esfera);
 
-                const esfera2 = esfera.clone();
-                esfera2.position.x = -2.5;
-                grupo.add(esfera2);
-                lucesAnimadas.push(esfera2);
-            }
+    //             const esfera2 = esfera.clone();
+    //             esfera2.position.x = -2.5;
+    //             grupo.add(esfera2);
+    //             lucesAnimadas.push(esfera2);
+
+    // // 
+    //         }
 
 
 
@@ -481,32 +484,32 @@ function iniciarPasillo() {
 
         if (personaje) {
             const pos = personaje.position;
-        
+
             if (moverIzquierda) {
                 pos.x -= 0.08; // velocidad lateral izquierda
             }
-        
+
             if (moverDerecha) {
                 pos.x += 0.08; // velocidad lateral derecha
             }
-        
+
             if (saltar && pos.y <= 1.01) {
                 if (typeof personaje.velocityY === 'undefined') personaje.velocityY = 0;
                 personaje.velocityY = 0.12; // impulso de salto
             }
-        
+
             // Simulación de gravedad
             if (typeof personaje.velocityY !== 'undefined') {
                 personaje.velocityY -= 0.006; // gravedad
                 pos.y += personaje.velocityY;
-        
+
                 if (pos.y < 1) {
                     pos.y = 1;
                     personaje.velocityY = 0;
                 }
             }
         }
-        
+
 
         if (personaje) {
             if (verificarColisiones(personaje)) {
@@ -567,14 +570,6 @@ function iniciarPasillo() {
             velocidadJugador = 0.05; // Reinicia si no se mueve o si está chocando
         }
 
-
-        // // Reciclado de secciones para pasillo infinito
-        // for (let i = 0; i < cantidadSecciones; i++) {
-        //     const seccion = crearSeccionPasillo(i * -largoSeccion + 2.5); // 🟢 compensar el z inicial
-        //     mundo.add(seccion);
-        //     seccionesPasillo.push(seccion);
-        // }
-        // ♻️ Reciclado de secciones cuando están muy atrás
 
 
 
@@ -688,6 +683,57 @@ window.addEventListener("DOMContentLoaded", () => {
 
         iniciarPasillo();
     });
+    let startX = 0;
+    let startY = 0;
+    let endX = 0;
+    let endY = 0;
+
+    document.addEventListener("touchstart", (e) => {
+        const touch = e.changedTouches[0];
+        startX = touch.pageX;
+        startY = touch.pageY;
+    }, false);
+
+    document.addEventListener("touchend", (e) => {
+        const touch = e.changedTouches[0];
+        endX = touch.pageX;
+        endY = touch.pageY;
+
+        const dx = endX - startX;
+        const dy = endY - startY;
+
+        const absDx = Math.abs(dx);
+        const absDy = Math.abs(dy);
+
+        
+
+        if (absDx > absDy) {
+            // Deslizar horizontal
+            if (dx > 30 && carrilActual < 1) {
+                carrilActual++;
+                const personaje = obtenerPersonaje();
+                if (personaje) personaje.position.x = carrilActual * 1.5;
+            }
+            else if (dx < -30 && carrilActual > -1) {
+                carrilActual--;
+                const personaje = obtenerPersonaje();
+                if (personaje) personaje.position.x = carrilActual * 1.5;
+            }
+            
+        } else {
+            if (dy < -30) {
+                moviendoMundo = true;
+                // 🔁 Simular tecla 'w'
+                window.dispatchEvent(new KeyboardEvent("keydown", { key: "w" }));
+            } else if (dy > 30) {
+                moviendoMundo = false;
+                // 🔁 Simular tecla 's'
+                window.dispatchEvent(new KeyboardEvent("keydown", { key: "s" }));
+            }
+            
+        }
+    }, false);
+
 });
 
 
