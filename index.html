@@ -2,11 +2,11 @@
 <html lang="es">
 
 <head>
-    <meta charset="UTF-8">
-    <title>Proyecto Alpha: Zona 9</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/style.css">
-    <script type="importmap">
+  <meta charset="UTF-8">
+  <title>Proyecto Alpha: Zona 9</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="importmap">
         {
           "imports": {
             "three": "https://unpkg.com/three@0.158.0/build/three.module.js",
@@ -14,40 +14,60 @@
           }
         }
         </script>
-        
+
 </head>
+
 
 <body class="neon-body">
 
-    
-    <div class="glow-background"></div>
 
-    <div id="pantalla-bienvenida" class="neon-container">
-        <h1 class="neon-title">Proyecto Alpha: <span class="zone">Zona 9</span></h1>
-        <p class="neon-sub">Escapa de la niebla tóxica antes de que te alcance</p>
+  <div class="glow-background"></div>
 
-        <button class="neon-button" id="btn-iniciar">🚀 Iniciar Juego</button>
-        <button class="neon-button" id="btn-instrucciones">❓ Instrucciones</button>
+  <div id="pantalla-bienvenida" class="neon-container">
+    <h1 class="neon-title">Proyecto Alpha: <span class="zone">Zona 9</span></h1>
+    <p class="neon-sub">Escapa de la niebla tóxica antes de que te alcance</p>
 
-        <div id="instrucciones" class="neon-instrucciones" style="display: none;">
-            <p>🕹️ <strong>Controles:</strong></p>
-            <ul>
-                <li>W / ↑ - Saltar</li>
-                <li>A / ← - Mover Izquierda</li>
-                <li>D / → - Mover Derecha</li>
-                <li>S / ↓ - Agacharse</li>
-                <li>Evita obstáculos y escapa de la niebla</li>
-            </ul>
-        </div>
+    <button class="neon-button" id="btn-iniciar">🚀 Iniciar Juego</button>
+    <button class="neon-button" id="btn-instrucciones">❓ Instrucciones</button>
+
+    <div id="instrucciones" class="neon-instrucciones" style="display: none;">
+      <p>🕹️ <strong>Controles:</strong></p>
+      <ul>
+        <li>W / ↑ - Saltar</li>
+        <li>A / ← - Mover Izquierda</li>
+        <li>D / → - Mover Derecha</li>
+        <li>S / ↓ - Agacharse</li>
+        <li>Evita obstáculos y escapa de la niebla</li>
+      </ul>
     </div>
-    <canvas id="juego" style="display: none;"></canvas>
-    <div id="hud">
-        <div id="contador">Esquivados: 0</div>
-        <div id="mensaje" style="display: none;">💥 ¡Has perdido!</div>
-      </div>
-      
+  </div>
+  <!-- En tu HTML -->
 
-    <script type="module" src="js/main.js"></script>
+
+  <canvas id="juego" style="display: none;"></canvas>
+  <div id="hud">
+    <div id="contador">Esquivados: 0</div>
+    <div id="nivel">Nivel: 1</div>
+    <div id="mensaje" style="display: none;">💥 ¡Has perdido!</div>
+  </div>
+
+  <div id="ventana-nivel" style="
+    display: none;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #00ffff;
+    padding: 30px;
+    border-radius: 15px;
+    font-size: 2em;
+    text-align: center;
+    z-index: 1000;
+">
+  </div>
+
+  <script type="module" src="js/main.js"></script>
 </body>
 
 </html>

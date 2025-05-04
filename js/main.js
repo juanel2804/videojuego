@@ -43,7 +43,8 @@ const velocidadMaxima = 1;    // velocidad máxima
 const aceleracion = 0.012;       // aceleración gradual
 
 let contadorChoques = 0;
-
+let nivelActual = 1;
+let obstaculosEsquivados = 0;
 
 function crearSeccionPasillo(posZ) {
     const grupo = new THREE.Group();
@@ -320,7 +321,7 @@ import { inicializarHUD } from './obstaculos.js';
 
 function iniciarPasillo() {
 
-  
+
 
     // Crear escena
     escena = new THREE.Scene();
@@ -334,18 +335,18 @@ function iniciarPasillo() {
     escena.add(mundo);
 
     const geometriaNiebla = new THREE.PlaneGeometry(6, 4);
-const materialNiebla = new THREE.MeshStandardMaterial({
-    color: 0x550055,
-    transparent: true,
-    opacity: 0.4,
-    side: THREE.DoubleSide,
-    emissive: 0x770077,
-    emissiveIntensity: 0.8
-});
-nieblaAsesina = new THREE.Mesh(geometriaNiebla, materialNiebla);
-nieblaAsesina.rotation.x = -Math.PI / 2;
-nieblaAsesina.position.set(0, 1.5, 3); // empieza detrás del jugador
-escena.add(nieblaAsesina);
+    const materialNiebla = new THREE.MeshStandardMaterial({
+        color: 0x550055,
+        transparent: true,
+        opacity: 0.4,
+        side: THREE.DoubleSide,
+        emissive: 0x770077,
+        emissiveIntensity: 0.8
+    });
+    nieblaAsesina = new THREE.Mesh(geometriaNiebla, materialNiebla);
+    nieblaAsesina.rotation.x = -Math.PI / 2;
+    nieblaAsesina.position.set(0, 1.5, 3); // empieza detrás del jugador
+    escena.add(nieblaAsesina);
 
 
     for (let i = 0; i < cantidadSecciones; i++) {
@@ -363,7 +364,8 @@ escena.add(nieblaAsesina);
 
     cargarPersonaje(escena);
     inicializarHUD(); // ✅ Esto conecta el HUD al div #contador
-    generarObstaculos(escena);
+    generarObstaculos(escena, mundo);
+
 
 
     // // Luz direccional para iluminar al personaje
@@ -403,13 +405,55 @@ escena.add(nieblaAsesina);
     // luzSuperior.castShadow = true;
     // luzFrontal.castShadow = true;
     let contadorEsquivados = 0;
+    
+    
+
+
     const divContador = document.getElementById("contador");
     const divMensaje = document.getElementById("mensaje");
 
 
+    function obstaculoEsquivadoCallback() {
+        obstaculosEsquivados++;
+    
+        const divContador = document.getElementById("contador");
+        if (divContador) {
+            divContador.textContent = `Esquivados: ${obstaculosEsquivados}`;
+        }
+    
+        if (obstaculosEsquivados % 15 === 0) {
+            nivelActual++;
+            generarObstaculos(escena, mundo, nivelActual);
+            mostrarVentanaNivel(nivelActual);
+            console.log(`🚀 Nivel aumentado: ${nivelActual}`);
+        }
+    
+        const divNivel = document.getElementById("nivel");
+        if (divNivel) {
+            divNivel.textContent = `Nivel: ${nivelActual}`;
+        }
+    }
+    
+    
+    
+    function mostrarVentanaNivel(nivel) {
+        const ventana = document.getElementById("ventana-nivel");
+        ventana.innerHTML = `🎉 ¡Subiste de Nivel!<br>Nivel ${nivel}`;
+        ventana.style.display = "block";
+        moviendoMundo = false;
+    
+        setTimeout(() => {
+            ventana.style.display = "none";
+            moviendoMundo = true;
+        }, 3000);
+    }
+    
+   
+    
 
     function animar() {
 
+        document.getElementById("nivel").innerText = `Nivel: ${nivelActual}`;
 
 
         requestAnimationFrame(animar);
@@ -417,7 +461,8 @@ escena.add(nieblaAsesina);
 
         const delta = reloj.getDelta();
         actualizarAnimacion(delta);
-        actualizarObstaculos(delta, mundo, camara, moviendoMundo);
+        actualizarObstaculos(delta, mundo, camara, moviendoMundo, velocidadJugador, obstaculoEsquivadoCallback);
+
 
 
         const personaje = obtenerPersonaje();
@@ -426,7 +471,7 @@ escena.add(nieblaAsesina);
                 if (!estaChocando) contadorChoques++; // 👈 Solo cuenta nuevos choques
                 estaChocando = true;
                 tiempoDetenido += delta;
-            
+
                 if (tiempoDetenido > 0.5) {
                     estaChocando = false;
                     tiempoDetenido = 0;
@@ -434,10 +479,12 @@ escena.add(nieblaAsesina);
             } else {
                 estaChocando = false;
                 tiempoDetenido = 0;
+                
+                
             }
-            
+
         }
-        
+
 
 
         // Animación de pulsación para portales
@@ -477,8 +524,8 @@ escena.add(nieblaAsesina);
         } else {
             velocidadJugador = 0.05; // Reinicia si no se mueve o si está chocando
         }
-        
-        
+
+
         // // Reciclado de secciones para pasillo infinito
         // for (let i = 0; i < cantidadSecciones; i++) {
         //     const seccion = crearSeccionPasillo(i * -largoSeccion + 2.5); // 🟢 compensar el z inicial
@@ -509,40 +556,36 @@ escena.add(nieblaAsesina);
             }
         }
 
-       // La niebla avanza siempre que se esté moviendo el mundo
-       if (personaje) {
-        const zJugador = personaje.getWorldPosition(new THREE.Vector3()).z;
-        const zNiebla = nieblaAsesina.position.z;
-        const distancia = zJugador - zNiebla;
-    
-        // Si te estás moviendo y no estás chocando, la niebla avanza pero más lento
-        if (estaChocando) {
-            // velocidad base + incremento por cada choque
-            const velocidadNiebla = 0.02 + contadorChoques * 0.005; // Ajusta el 0.002 si quieres que acelere más o menos
-            nieblaAsesina.position.z -= velocidadNiebla;
-        }else if (moviendoMundo && distancia > 3) {
-            nieblaAsesina.position.z -= 0.001; // avanza lentamente si estás corriendo bien
-        }
-        
-        
-    
+        // La niebla avanza siempre que se esté moviendo el mundo
+        if (personaje) {
+            const zJugador = personaje.getWorldPosition(new THREE.Vector3()).z;
+            const zNiebla = nieblaAsesina.position.z;
+            const distancia = zJugador - zNiebla;
 
-    }
-    
-    
-        
+            // Si te estás moviendo y no estás chocando, la niebla avanza pero más lento
+            if (estaChocando) {
+                // velocidad base + incremento por cada choque
+                const velocidadNiebla = 0.02 + contadorChoques * 0.005; // Ajusta el 0.002 si quieres que acelere más o menos
+                nieblaAsesina.position.z -= velocidadNiebla;
+            } else if (moviendoMundo && distancia > 3) {
+                nieblaAsesina.position.z -= 0.001; // avanza lentamente si estás corriendo bien
+            }
+
+
+        }
+
         // Verifica si alcanzó al jugador
         if (personaje) {
             const zJugador = personaje.getWorldPosition(new THREE.Vector3()).z;
             const zNiebla = nieblaAsesina.position.z;
-        
+
             if (zNiebla < zJugador + 0.5) {
                 alert("🌫️ ¡La niebla te atrapó!");
                 location.reload();
                 return;
             }
         }
-        
+
 
 
         renderizador.render(escena, camara);
@@ -553,20 +596,20 @@ escena.add(nieblaAsesina);
 
     const personaje = obtenerPersonaje();
 
-if (personaje) {
-    if (verificarColisiones(personaje)) {
-        estaChocando = true;
-        tiempoDetenido += delta;
+    if (personaje) {
+        if (verificarColisiones(personaje)) {
+            estaChocando = true;
+            tiempoDetenido += delta;
 
-        if (tiempoDetenido > 0.5) { // medio segundo de castigo
+            if (tiempoDetenido > 0.5) { // medio segundo de castigo
+                estaChocando = false;
+                tiempoDetenido = 0;
+            }
+        } else {
             estaChocando = false;
             tiempoDetenido = 0;
         }
-    } else {
-        estaChocando = false;
-        tiempoDetenido = 0;
     }
-}
 
 
     animar();
