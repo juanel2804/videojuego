@@ -163,10 +163,16 @@ html {
 
 canvas#juego {
   width: 100%;
-  height: auto; /* ✅ permite que crezca si el contenido lo necesita */
+  height: auto;
   display: block;
+  max-height: 100vh;
   touch-action: none;
 }
+html, body {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+}
+
 
 #controles-moviles {
   position: absolute;
