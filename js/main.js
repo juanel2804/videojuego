@@ -366,7 +366,13 @@ function iniciarPasillo() {
     camara = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
     camara.position.set(0, 2, 2.5);
     camara.lookAt(0, 1.5, 0);
-
+    const esMovil = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    if (esMovil) {
+        camara.fov = 85; // un campo de visión más amplio pero no extremo
+        camara.position.set(0, 2.2, 4); // solo ligeramente más lejos
+        camara.updateProjectionMatrix();
+    }
+    
 
     cargarPersonaje(escena);
     inicializarHUD(); // ✅ Esto conecta el HUD al div #contador
