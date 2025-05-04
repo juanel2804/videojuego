@@ -37,8 +37,7 @@ export function generarObstaculos(escena, mundo, nivel = 1) {
     }
 }
 
-export function actualizarObstaculos(delta, mundo, camara, moviendoMundo, velocidadJugador, obstaculoEsquivadoCallback)
- {
+export function actualizarObstaculos(delta, mundo, camara, moviendoMundo, velocidadJugador, obstaculoEsquivadoCallback) {
     {
         if (!moviendoMundo) return;
 
@@ -69,7 +68,7 @@ export function actualizarObstaculos(delta, mundo, camara, moviendoMundo, veloci
                 if (typeof obstaculoEsquivadoCallback === "function") {
                     obstaculoEsquivadoCallback(); // ✅ Ahora esta función controla todo
                 }
-                
+
             }
 
         }

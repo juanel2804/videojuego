@@ -223,28 +223,28 @@ function crearSeccionPasillo(posZ) {
 
 
 
-    // for (let z = -40; z <= 40; z += 10) {
-    //     const rejillaIzq = new THREE.Mesh(
-    //         new THREE.BoxGeometry(0.03, 4, 0.05),
-    //         new THREE.MeshStandardMaterial({
-    //             color: 0x110011,
-    //             metalness: 0.7,
-    //             roughness: 0.3
-    //         })
-    //     );
-    //     rejillaIzq.position.set(-2.4, 2, z); // ✅ MÁS CERCA DE LA PARED
-    //     grupo.add(rejillaIzq);
+    for (let z = -40; z <= 40; z += 10) {
+        const rejillaIzq = new THREE.Mesh(
+            new THREE.BoxGeometry(0.03, 4, 0.05),
+            new THREE.MeshStandardMaterial({
+                color: 0x110011,
+                metalness: 0.7,
+                roughness: 0.3
+            })
+        );
+        rejillaIzq.position.set(-2.4, 2, z); // ✅ MÁS CERCA DE LA PARED
+        grupo.add(rejillaIzq);
 
-    //     const rejillaDer = rejillaIzq.clone();
-    //     rejillaDer.position.x = 2.4; // ✅ MÁS CERCA DE LA PARED
-    //     grupo.add(rejillaDer);
-    // }
-
-
+        const rejillaDer = rejillaIzq.clone();
+        rejillaDer.position.x = 2.4; // ✅ MÁS CERCA DE LA PARED
+        grupo.add(rejillaDer);
+    }
 
 
-    // agregarDiagonales(paredIzq, 1);
-    // agregarDiagonales(paredDer, -1);
+
+
+    agregarDiagonales(paredIzq, 1);
+    agregarDiagonales(paredDer, -1);
 
 
     piso.receiveShadow = true;
@@ -284,38 +284,36 @@ function crearSeccionPasillo(posZ) {
         tubo2.position.x = 2.9;
         grupo.add(tubo2);
     }
-    // luzPared = new THREE.RectAreaLight(0xff00ff, 2, 4, 4);
-    // luzPared.position.set(-1.9, 2, 0);
-    // luzPared.lookAt(0, 2, 0);
-    // grupo.add(luzPared);
+    luzPared = new THREE.RectAreaLight(0xff00ff, 2, 4, 4);
+    luzPared.position.set(-1.9, 2, 0);
+    luzPared.lookAt(0, 2, 0);
+    grupo.add(luzPared);
 
-    // luzParedDer = luzPared.clone();
-    // luzParedDer.position.x = 1.9;
-    // luzParedDer.lookAt(0, 2, 0);
-    // grupo.add(luzParedDer);
+    luzParedDer = luzPared.clone();
+    luzParedDer.position.x = 1.9;
+    luzParedDer.lookAt(0, 2, 0);
+    grupo.add(luzParedDer);
 
 
-    //         for (let z = -40; z <= 40; z += 10) {
-    //             const esfera = new THREE.Mesh(
-    //                 new THREE.SphereGeometry(0.15, 16, 16),
-    //                 new THREE.MeshStandardMaterial({
-    //                     emissive: 0xff00ff,
-    //                     emissiveIntensity: 3,
-    //                     color: 0x000000
-    //                 })
-    //             );
+    for (let z = -40; z <= 40; z += 10) {
+        const esfera = new THREE.Mesh(
+            new THREE.SphereGeometry(0.15, 16, 16),
+            new THREE.MeshStandardMaterial({
+                emissive: 0xff00ff,
+                emissiveIntensity: 3,
+                color: 0x000000
+            })
+        );
 
-    //             esfera.position.set(2.5, 2.5, z);
-    //             grupo.add(esfera);
-    //             lucesAnimadas.push(esfera);
+        esfera.position.set(2.5, 2.5, z);
+        grupo.add(esfera);
+        lucesAnimadas.push(esfera);
 
-    //             const esfera2 = esfera.clone();
-    //             esfera2.position.x = -2.5;
-    //             grupo.add(esfera2);
-    //             lucesAnimadas.push(esfera2);
-
-    // // 
-    //         }
+        const esfera2 = esfera.clone();
+        esfera2.position.x = -2.5;
+        grupo.add(esfera2);
+        lucesAnimadas.push(esfera2);
+    }
 
 
 
@@ -372,7 +370,7 @@ function iniciarPasillo() {
         camara.position.set(0, 2.2, 4); // solo ligeramente más lejos
         camara.updateProjectionMatrix();
     }
-    
+
 
     cargarPersonaje(escena);
     inicializarHUD(); // ✅ Esto conecta el HUD al div #contador
@@ -711,7 +709,7 @@ window.addEventListener("DOMContentLoaded", () => {
         const absDx = Math.abs(dx);
         const absDy = Math.abs(dy);
 
-        
+
 
         if (absDx > absDy) {
             // Deslizar horizontal
@@ -725,7 +723,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 const personaje = obtenerPersonaje();
                 if (personaje) personaje.position.x = carrilActual * 1.5;
             }
-            
+
         } else {
             if (dy < -30) {
                 moviendoMundo = true;
@@ -736,7 +734,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 // 🔁 Simular tecla 's'
                 window.dispatchEvent(new KeyboardEvent("keydown", { key: "s" }));
             }
-            
+
         }
     }, false);
 

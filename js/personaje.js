@@ -34,12 +34,12 @@ export async function cargarPersonaje(escena) {
 
         if (personaje.animations.length > 0) {
             accionCorrer = mixer.clipAction(personaje.animations[0]);
-accionCorrer.setLoop(THREE.LoopRepeat);  // 🔁 Repetir en bucle
-accionCorrer.clampWhenFinished = false;
-accionCorrer.enabled = true;
+            accionCorrer.setLoop(THREE.LoopRepeat);  // 🔁 Repetir en bucle
+            accionCorrer.clampWhenFinished = false;
+            accionCorrer.enabled = true;
 
-accionIdle = mixer.clipAction(personaje.animations[0]); // misma animación por ahora
-accionIdle.paused = true;
+            accionIdle = mixer.clipAction(personaje.animations[0]); // misma animación por ahora
+            accionIdle.paused = true;
 
         }
 
@@ -65,7 +65,7 @@ function activarTeclasParaCorrer() {
             }
             estaCorriendo = true;
         }
-        
+
 
         // ⛔️ Detener animación con S
         if (tecla === 's' && estaCorriendo) {
